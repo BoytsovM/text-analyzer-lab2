@@ -1,0 +1,2 @@
+add_executable(text_analyzer main.cpp)
+target_link_libraries(text_analyzer PRIVATE user_interface logger data_processor)

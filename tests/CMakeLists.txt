@@ -1,0 +1,8 @@
+add_executable(run_tests test_processor.cpp)
+target_link_libraries(run_tests PRIVATE data_processor)
+
+add_executable(run_integration_tests test_integration.cpp)
+target_link_libraries(run_integration_tests PRIVATE user_interface logger data_processor)
+
+add_test(NAME unit_tests COMMAND run_tests)
+add_test(NAME integration_tests COMMAND run_integration_tests)
