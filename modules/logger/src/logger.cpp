@@ -7,6 +7,7 @@
 
 static std::ofstream log_file;
 static bool use_file = false;
+static LogLevel min_log_level = INFO;
 
 static std::string get_timestamp() {
     auto now = std::time(nullptr);
@@ -30,7 +31,15 @@ void log_init(const std::string& filename) {
     }
 }
 
+void log_set_level(LogLevel level) {
+    min_log_level = level;
+}
+
 void log_message(LogLevel level, const std::string& message) {
+    if (level < min_log_level) {
+        return;
+    }
+
     std::string prefix;
     switch (level) {
         case INFO:    prefix = "[INFO]";    break;
