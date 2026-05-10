@@ -1,9 +1,20 @@
 #include "logger.h"
 #include <iostream>
 #include <fstream>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
 
 static std::ofstream log_file;
 static bool use_file = false;
+
+static std::string get_timestamp() {
+    auto now = std::time(nullptr);
+    auto tm = *std::localtime(&now);
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S");
+    return oss.str();
+}
 
 void log_init(const std::string& filename) {
     if (!filename.empty()) {
@@ -11,7 +22,7 @@ void log_init(const std::string& filename) {
         if (log_file.is_open()) {
             use_file = true;
         } else {
-            std::cerr << "Не удалось открыть лог-файл: " << filename << std::endl;
+            std::cerr << "Cannot open log file: " << filename << std::endl;
             use_file = false;
         }
     } else {
@@ -22,12 +33,12 @@ void log_init(const std::string& filename) {
 void log_message(LogLevel level, const std::string& message) {
     std::string prefix;
     switch (level) {
-        case INFO:    prefix = "[INFO] ";    break;
-        case WARNING: prefix = "[WARNING] "; break;
-        case ERROR:   prefix = "[ERROR] ";   break;
+        case INFO:    prefix = "[INFO]";    break;
+        case WARNING: prefix = "[WARNING]"; break;
+        case ERROR:   prefix = "[ERROR]";   break;
     }
 
-    std::string full_msg = prefix + message;
+    std::string full_msg = "[" + get_timestamp() + "] " + prefix + " " + message;
 
     if (use_file && log_file.is_open()) {
         log_file << full_msg << std::endl;
